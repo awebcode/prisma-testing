@@ -1,0 +1,29 @@
+// schema.prisma
+datasource db {
+  provider = "mongodb"
+  url      = env("DATABASE_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+model Author {
+  id        String    @id @default(auto()) @map("_id") @db.ObjectId
+  name      String
+  email     String?   @unique
+  password  String
+  posts     Post[]
+  createdAt DateTime? @default(now()) @db.Date
+  updatedAt DateTime? @updatedAt @db.Date
+}
+
+model Post {
+  id        String    @id @default(auto()) @map("_id") @db.ObjectId
+  title     String
+  content   String
+  author    Author    @relation(fields: [authorId], references: [id])
+  authorId  String    @db.ObjectId
+  createdAt DateTime? @default(now()) @db.Date
+  updatedAt DateTime? @updatedAt @db.Date
+}
